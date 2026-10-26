@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#76b2c9" />
+  <title>Đấu Trường Phân Bón Hữu Cơ</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main id="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">MINI GAME TRẮC NGHIỆM · THUYẾT TRÌNH</p>
+        <h1>Đấu Trường Phân Bón Hữu Cơ</h1>
+      </div>
+      <div class="topbar-actions">
+        <p id="turn-indicator" class="turn-indicator">Chuẩn bị trận đấu</p>
+        <div class="topbar-btn-group">
+          <button id="intro-replay-btn" class="fullscreen-button" type="button" title="Xem lại phần giới thiệu">ℹ Giới thiệu</button>
+          <button id="sound-btn" class="fullscreen-button" type="button" title="Bật/Tắt âm thanh">🔊 Âm thanh</button>
+          <button id="fullscreen-button" class="fullscreen-button" type="button" title="Phóng to toàn màn hình">⛶ Toàn màn hình</button>
+        </div>
+      </div>
+    </header>
+
+    <section id="team-hud" class="team-hud" aria-label="Máu của các đội"></section>
+
+    <section id="quiz-card" class="quiz-card" aria-live="polite">
+      <p id="question-number" class="question-number"></p>
+      <h2 id="question-text">Nhấn bắt đầu để vào đấu trường</h2>
+      <div id="answer-list" class="answer-list"></div>
+      <div id="action-list" class="action-list" hidden>
+        <button id="attack-button" class="action attack">⚔ Tấn công</button>
+        <button id="heal-button" class="action heal">✦ Hồi 15 HP</button>
+      </div>
+      <p id="status-message" class="status-message"></p>
+    </section>
+
+    <p id="target-hint" class="target-hint" hidden>Chọn một lâu đài đối thủ đang phát sáng để tấn công.</p>
+    <p class="camera-hint">Kéo để xoay góc nhìn · Cuộn để phóng to/thu nhỏ</p>
+  </main>
+
+  <!-- PHẦN INTRO ĐIỆN ẢNH CHUYỂN CẢNH (CINEMATIC MOVIE INTRO) -->
+  <div id="intro-overlay" class="cinema-intro">
+    <!-- Thanh viền đen điện ảnh trên (Top Letterbox Bar) -->
+    <div class="cinema-bar cinema-bar-top">
+      <div class="cinema-top-content">
+        <div class="cinema-badge-group">
+          <span class="cinema-live-dot"></span>
+          <span class="cinema-live-text">ĐANG CHIẾU GIỚI THIỆU TRẬN ĐẤU</span>
+        </div>
+        <div class="cinema-timeline-wrapper">
+          <div id="cinema-progress-fill" class="cinema-progress-fill"></div>
+        </div>
+        <div class="cinema-top-actions">
+          <button id="cinema-sound-toggle" class="cinema-icon-btn" type="button" title="Bật/Tắt âm thanh">
+            <span id="intro-sound-icon">🔊</span>
+          </button>
+          <button id="cinema-skip-btn" class="cinema-skip-btn" type="button">Bỏ qua phim ▶▶</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thanh viền đen điện ảnh dưới (Bottom Letterbox Bar) -->
+    <div class="cinema-bar cinema-bar-bottom">
+      <div class="cinema-bottom-content">
+        <div class="cinema-scene-indicators" id="cinema-indicators">
+          <button class="cinema-step-pill active" data-scene="0" type="button">1. KHỞI NGUYÊN</button>
+          <button class="cinema-step-pill" data-scene="1" type="button">2. TỔ 1: ĐẾ QUỐC</button>
+          <button class="cinema-step-pill" data-scene="2" type="button">3. TỔ 2: TEMPEST</button>
+          <button class="cinema-step-pill" data-scene="3" type="button">4. TỔ 3: LUBELIUS</button>
+          <button class="cinema-step-pill" data-scene="4" type="button">5. QUYẾT ĐẤU</button>
+          <button class="cinema-step-pill" data-scene="5" type="button">6. VÀO TRẬN (PLAY)</button>
+        </div>
+        <div class="cinema-playback-controls">
+          <button id="cinema-prev-btn" class="cinema-ctrl-btn" type="button" title="Cảnh trước">⏮</button>
+          <button id="cinema-playpause-btn" class="cinema-ctrl-btn" type="button" title="Tạm dừng / Tiếp tục">⏸</button>
+          <button id="cinema-next-btn" class="cinema-ctrl-btn" type="button" title="Cảnh kế tiếp">⏭</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SÂN KHẤU CÁC CẢNH PHIM ĐIỆN ẢNH -->
+    <div class="cinema-stage">
+      <!-- CẢNH 0: KHỞI NGUYÊN CHIẾN ĐỊA -->
+      <article class="cinema-scene active" data-scene="0">
+        <div class="cinema-card">
+          <div class="cinema-eyebrow">BẢN HÙNG CA NÔNG NGHIỆP SINH THÁI · KHỞI NGUYÊN</div>
+          <h2 class="cinema-title">ĐẤU TRƯỜNG PHÂN BÓN HỮU CƠ</h2>
+          <p class="cinema-subtitle">
+            Giữa thung lũng sương mây huyền thoại, nguồn dưỡng chất hữu cơ màu mỡ đã đánh thức sức mạnh của ba đại đế chế...
+          </p>
+          <div class="cinema-meta-row">
+            <span class="cinema-chip">🏰 3 Đại Thành Trì 3D</span>
+            <span class="cinema-chip">🌾 20 Câu Hỏi Chuyên Sâu</span>
+            <span class="cinema-chip">⚡ Chiến Thuật Thời Gian Thực</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- CẢNH 1: TỔ 1 - ĐẾ QUỐC PHƯƠNG ĐÔNG -->
+      <article class="cinema-scene" data-scene="1">
+        <div class="cinema-card faction-card-eastern">
+          <div class="cinema-eyebrow tag-green">PHE PHÁI THAM CHIẾN SỐ 1</div>
+          <h2 class="cinema-title title-green">🏯 TỔ 1: ĐẾ QUỐC PHƯƠNG ĐÔNG</h2>
+          <p class="cinema-subtitle">
+            Hoàng thành Á Đông mái ngói bích ngọc kiên cố, lồng đèn cung đình rực lửa truyền thống nông nghiệp và phù sa màu mỡ.
+          </p>
+          <div class="cinema-meta-row">
+            <span class="cinema-chip green">Sinh lực: 100 HP</span>
+            <span class="cinema-chip green">Tường thành bát giác · Mái ngói 3 tầng</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- CẢNH 2: TỔ 2 - LIÊN BANG MA QUỐC TEMPEST -->
+      <article class="cinema-scene" data-scene="2">
+        <div class="cinema-card faction-card-tempest">
+          <div class="cinema-eyebrow tag-orange">PHE PHÁI THAM CHIẾN SỐ 2</div>
+          <h2 class="cinema-title title-orange">🔮 TỔ 2: MA QUỐC TEMPEST</h2>
+          <p class="cinema-subtitle">
+            Pháo đài đá Obsidian đen huyền ảo, bảo hộ bởi Đại Pha Lê Slime ma pháp bay lơ lửng – đột phá công nghệ vi sinh học hữu cơ!
+          </p>
+          <div class="cinema-meta-row">
+            <span class="cinema-chip orange">Sinh lực: 100 HP</span>
+            <span class="cinema-chip orange">Đại Pha Lê Slime phát sáng · Vành đai ma đạo</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- CẢNH 3: TỔ 3 - THÁNH QUỐC LUBELIUS -->
+      <article class="cinema-scene" data-scene="3">
+        <div class="cinema-card faction-card-lubelius">
+          <div class="cinema-eyebrow tag-gold">PHE PHÁI THAM CHIẾN SỐ 3</div>
+          <h2 class="cinema-title title-gold">⛪ TỔ 3: THÁNH QUỐC LUBELIUS</h2>
+          <p class="cinema-subtitle">
+            Đại thánh đường Gothic tôn nghiêm với tháp chuông uy vũ, cửa sổ hoa hồng phát sáng và đức tin thanh lọc đất phèn cằn cỗi.
+          </p>
+          <div class="cinema-meta-row">
+            <span class="cinema-chip gold">Sinh lực: 100 HP</span>
+            <span class="cinema-chip gold">Tháp nhọn Gothic · Cửa sổ hoa hồng thánh điện</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- CẢNH 4: CHIẾN THUẬT & LUẬT THI ĐẤU -->
+      <article class="cinema-scene" data-scene="4">
+        <div class="cinema-card">
+          <div class="cinema-eyebrow">QUY TẮC ĐẠI CHIẾN</div>
+          <h2 class="cinema-title">QUYẾT ĐẤU TRI THỨC</h2>
+          <div class="cinema-rules-grid">
+            <div class="cinema-rule-col">
+              <span class="rule-icon">🎯</span>
+              <h4>TRẢ LỜI CÂU HỎI</h4>
+              <p>Trả lời đúng nhận quyền khai hỏa. Trả lời sai nhường quyền cho tổ kế tiếp.</p>
+            </div>
+            <div class="cinema-rule-col">
+              <span class="rule-icon">🚀</span>
+              <h4>TẤN CÔNG ĐỐI THỦ</h4>
+              <p>Phóng tên lửa đạn đạo oanh tạc lâu đài đối phương, gây sát thương <strong>−25 HP</strong>.</p>
+            </div>
+            <div class="cinema-rule-col">
+              <span class="rule-icon">✦</span>
+              <h4>HỒI MÁU SINH LỰC</h4>
+              <p>Bơm sinh lực hữu cơ, hồi phục tức thì <strong>+15 HP</strong> cho lâu đài đội mình.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- CẢNH 5: CAO TRÀO -> NÚT PLAY KHỔNG LỒ RỰC LỬA -->
+      <article class="cinema-scene" data-scene="5">
+        <div class="cinema-card cinema-climax-card">
+          <div class="cinema-eyebrow fire-text">🔥 ĐẤU TRƯỜNG ĐÃ MỞ CỬA · GIỜ G ĐÃ ĐIỂM 🔥</div>
+          <h2 class="cinema-title climax-title">SẴN SÀNG KHAI CHIẾN!</h2>
+          <p class="cinema-subtitle climax-sub">
+            Ba pháo đài đã sẵn sàng với 100 HP ban đầu. Hãy nhấn nút bên dưới để chính thức bước vào cuộc quyết chiến!
+          </p>
+          <div class="cinema-play-container">
+            <button id="intro-play-button" class="cinema-huge-play-btn" type="button">
+              <span class="play-flare"></span>
+              <span class="play-icon">▶</span>
+              <span class="play-label">BẮT ĐẦU CHƠI (PLAY)</span>
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div id="start-overlay" class="overlay hidden">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="rules-title">
+      <p class="eyebrow">SẴN SÀNG THI ĐẤU?</p>
+      <h2 id="rules-title">Luật chơi</h2>
+      <ol>
+        <li>Ba đội bắt đầu với 100 HP.</li>
+        <li>Đội đang có lượt trả lời câu hỏi A, B, C, D ở giữa màn hình.</li>
+        <li>Nếu sai, câu hỏi chuyển sang đội kế tiếp. Nếu cả ba đội cùng sai, câu hỏi được bỏ qua.</li>
+        <li>Nếu đúng, đội chọn tấn công một lâu đài đối thủ (−25 HP) hoặc hồi 15 HP, tối đa 100.</li>
+        <li>Đội cuối cùng còn HP là đội chiến thắng.</li>
+      </ol>
+      <p id="modal-message" class="modal-message" hidden></p>
+      <div class="modal-actions">
+        <button id="start-button" class="primary-button">Bắt đầu</button>
+        <button id="modal-intro-button" class="intro-ghost-btn" style="margin-top:10px; width:100%; border:1px solid rgba(255,255,255,0.2);">Xem lại phần giới thiệu</button>
+      </div>
+    </section>
+  </div>
+
+  <audio id="start-sound" preload="auto" loop src="sound/stat.mp3"></audio>
+  <audio id="victory-sound" preload="auto" src="sound/victory.mp3"></audio>
+
+  <script type="importmap">
+    {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+  </script>
+  <script type="module" src="js/game.js"></script>
+</body>
+</html>
